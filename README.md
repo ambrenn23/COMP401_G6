@@ -1,1 +1,3 @@
-# COMP401_G6
+# COMP 401 Group 6 - SACK
+
+
