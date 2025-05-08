@@ -5,25 +5,20 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     try {
-      const response = await fetch("http://localhost:5000/register", {
+      const response = await fetch("http://127.0.0.1:5000/register", {  // Changed localhost to 127.0.0.1
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
   
       if (response.ok) {
-        console.log("✅ Form submitted successfully");
-        alert("Registration successful!");
-        setForm({ name: "", email: "", date: "" });
+        console.log("Form submitted successfully");
       } else {
-        console.error("❌ Failed to submit form");
-        alert("Something went wrong.");
+        console.error("Failed to submit form");
       }
     } catch (err) {
-      console.error("❌ Fetch error:", err);
-      alert("Server error or CORS issue. Check backend is running.");
+      console.error("Error submitting form:", err);
     }
   };
 

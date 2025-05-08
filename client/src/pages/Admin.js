@@ -4,14 +4,17 @@ export default function Admin() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/admin")
-      .then((res) => res.json())
+    fetch("http://127.0.0.1:5000/admin")  // Changed localhost to 127.0.0.1
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch admin data");
+        return res.json();
+      })
       .then((rows) => setData(rows))
       .catch((err) => {
-        console.error("Failed to fetch admin data:", err);
-        alert("Failed to load admin data. Is the backend running?");
+        console.error("Admin fetch error:", err);
       });
   }, []);
+  
 
   return (
     <div>

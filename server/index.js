@@ -4,7 +4,9 @@ const cors = require('cors');
 const { Pool } = require('pg');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000']
+  }));
 app.use(express.json());
 
 const pool = new Pool({
@@ -30,5 +32,10 @@ app.get("/admin", async (req, res) => {
   }
 });
 
+app.get("/test", (req, res) => {
+    res.send("Server is working");
+  });
+  
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+  app.listen(5000, "127.0.0.1", () => console.log("Server running on http://127.0.0.1:5000"));
+
