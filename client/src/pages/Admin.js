@@ -1,125 +1,124 @@
 import { useEffect, useState } from "react";
 
 export default function Admin() {
-  const [students, setStudents] = useState([]);
-  const [editingStudent, setEditingStudent] = useState(null);
-
-  const fetchStudents = async () => {
-    const response = await fetch("http://127.0.0.1:5000/students");
-    const data = await response.json();
-    setStudents(data);
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this student?"))
-      return;
-    const response = await fetch(`http://127.0.0.1:5000/register/${id}`, {
-      method: "DELETE",
-    });
-    if (response.ok) {
-      alert(`Deleted student with id ${id}`);
-      fetchStudents();
-    } else {
-      alert("Failed to delete student.");
-    }
-  };
-
-  const handleEdit = (student) => {
-    setEditingStudent({ ...student });
-  };
-
-  const handleEditChange = (e) => {
-    setEditingStudent({ ...editingStudent, [e.target.name]: e.target.value });
-  };
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    const response = await fetch(
-      `http://127.0.0.1:5000/register/${editingStudent.id}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingStudent),
-      }
-    );
-    if (response.ok) {
-      alert(`Student with id ${editingStudent.id} updated.`);
-      setEditingStudent(null);
-      fetchStudents();
-    } else {
-      alert("Failed to update student.");
-    }
-  };
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetchStudents();
+    fetch("http://127.0.0.1:5000/admin")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch admin data");
+        return res.json();
+      })
+      .then((rows) => setData(rows))
+      .catch((err) => {
+        console.error("Admin fetch error:", err);
+      });
   }, []);
 
-  return (
-    <div>
-      <h2>Admin Panel (Dummy Data)</h2>
-      {students.length === 0 ? (
-        <p>No students found.</p>
-      ) : (
-        <ul>
-          {students.map((student) => (
-            <li key={student.id}>
-              {student.name} ({student.email}) - {student.date} - {student.time}{" "}
-              - {student.donation}
-              <button onClick={() => handleDelete(student.id)}>Delete</button>
-              <button onClick={() => handleEdit(student)}>Edit</button>
-            </li>
-          ))}
-        </ul>
-      )}
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this entry?")) return;
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/register/${id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setData(data.filter((entry) => entry.id !== id));
+      } else {
+        alert("Failed to delete entry.");
+      }
+    } catch (err) {
+      console.error("Error deleting entry:", err);
+    }
+  };
 
-      {editingStudent && (
-        <form onSubmit={handleEditSubmit}>
-          <h3>Edit Student</h3>
-          <input
-            name="name"
-            value={editingStudent.name}
-            onChange={handleEditChange}
-            required
-          />
-          <br />
-          <input
-            name="email"
-            value={editingStudent.email}
-            onChange={handleEditChange}
-            required
-          />
-          <br />
-          <input
-            name="date"
-            type="date"
-            value={editingStudent.date}
-            onChange={handleEditChange}
-            required
-          />
-          <br />
-          <input
-            name="time"
-            type="time"
-            value={editingStudent.time}
-            onChange={handleEditChange}
-            required
-          />
-          <br />
-          <input
-            name="donation"
-            type="number"
-            min="0"
-            value={editingStudent.donation}
-            onChange={handleEditChange}
-          />
-          <br />
-          <button type="submit">Save</button>
-          <button type="button" onClick={() => setEditingStudent(null)}>
-            Cancel
-          </button>
-        </form>
-      )}
+  return (
+    <div
+      style={{ background: "#090909", minHeight: "100vh", paddingTop: "40px" }}
+    >
+      <div
+        style={{
+          background: "#0f0f0f",
+          color: "#fff",
+          padding: "30px",
+          borderRadius: "12px",
+          boxShadow: "0 0 20px #00f0ff",
+          maxWidth: "700px",
+          margin: "0 auto",
+          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        }}
+      >
+        <h2
+          style={{
+            textAlign: "center",
+            marginBottom: "20px",
+            color: "#00f0ff",
+          }}
+        >
+          Admin Panel
+        </h2>
+
+        {data.length === 0 ? (
+          <p style={{ textAlign: "center", color: "#888" }}>
+            No registrations yet.
+          </p>
+        ) : (
+          <ul style={{ listStyleType: "none", padding: 0 }}>
+            {data.map((entry) => (
+              <li
+                key={entry.id}
+                style={{
+                  border: "1px solid #333",
+                  padding: "15px",
+                  marginBottom: "15px",
+                  borderRadius: "8px",
+                  background: "#121212",
+                }}
+              >
+                <p style={{ marginBottom: "8px" }}>
+                  <strong>{entry.name}</strong> ({entry.email})
+                </p>
+                <p style={{ marginBottom: "8px", color: "#0ff" }}>
+                  Date:{" "}
+                  {entry.date ? new Date(entry.date).toLocaleDateString() : "-"}{" "}
+                  | Time: {entry.time || "-"}
+                </p>
+                <p style={{ marginBottom: "12px", color: "#0f0" }}>
+                  Donation: {entry.donation ? `$${entry.donation}` : "None"}
+                </p>
+                <div>
+                  <button
+                    style={{
+                      background: "linear-gradient(to right, #ff416c, #ff4b2b)",
+                      border: "none",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      color: "#fff",
+                      cursor: "pointer",
+                      marginRight: "10px",
+                    }}
+                    onClick={() => handleDelete(entry.id)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    style={{
+                      background: "linear-gradient(to right, #00f0ff, #8e2de2)",
+                      border: "none",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      color: "#fff",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => alert("Edit not implemented yet.")}
+                  >
+                    Edit
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
