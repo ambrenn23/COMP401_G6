@@ -7,6 +7,7 @@ export default function Register() {
   const [form, setForm] = useState({
     name: "",
     email: "",
+    date: "",
     time: "12:00",
     donation: "",
   });
@@ -16,21 +17,26 @@ export default function Register() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const response = await fetch("http://127.0.0.1:5000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    if (!selectedDate) {
-      alert("Please select a date.");
-      return;
+      if (response.ok) {
+        alert("Registered successfully!");
+        setForm({ name: "", email: "", date: "", time: "12:00", donation: "" });
+        setSelectedDate(null);
+      } else {
+        alert("Failed to submit form.");
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      alert("Error submitting form.");
     }
-
-    const formattedForm = {
-      ...form,
-      date: selectedDate.toISOString().split("T")[0],
-    };
-
-    console.log("Simulated form data:", formattedForm);
-    alert("Registration simulated. Check console for data.");
   };
 
   return (
@@ -96,7 +102,15 @@ export default function Register() {
           <label style={{ display: "block", marginBottom: "10px" }}>
             Select Date:
           </label>
-          <Calendar selected={selectedDate} onSelect={setSelectedDate} />
+
+          <Calendar
+            selected={selectedDate}
+            onSelect={(date) => {
+              setSelectedDate(date);
+              setForm({ ...form, date: date.toISOString().split("T")[0] });
+            }}
+          />
+
           {selectedDate && (
             <p style={{ marginTop: "10px", color: "#00f0ff" }}>
               Selected Date: {selectedDate.toLocaleDateString()}
