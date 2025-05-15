@@ -12,14 +12,111 @@ code {
     monospace;
 }
 
-.react-time-picker__wrapper {
+:root {
+  --rdp-weekday-opacity: 1 !important;
+  --rdp-weekday-color: #00f0ff !important;
+  --rdp-weekday-font-size: 1rem !important;
+  --rdp-weekday-padding: 0.5rem !important;
+  --rdp-weekday-text-align: center !important;
+}
+
+.rdp {
   background-color: #121212;
+  color: #fff;
   border-radius: 8px;
-  border: 1px solid #333;
-  padding: 8px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  --rdp-weekday-opacity: 1;
+  --rdp-weekday-color: #00f0ff;
+  --rdp-weekday-font-size: 1rem;
+  --rdp-weekday-padding: 0.5rem;
+  --rdp-weekday-text-align: center;
+}
+
+.rdp-caption {
+  color: #00f0ff;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.rdp-nav_button {
+  color: #00f0ff;
+  font-size: 1.5rem;
+}
+
+.rdp-head_cell {
+  color: #999;
+  font-weight: normal;
+}
+
+.rdp-day {
+  color: #ddd;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.rdp-day:hover {
+  background-color: #333;
+  color: #00f0ff;
+  cursor: pointer;
+}
+
+.rdp-day_today {
+  border: 1px solid #00f0ff;
   color: #00f0ff;
 }
-.react-time-picker__clock {
-  background-color: #0f0f0f;
+
+.rdp-day_selected {
+  background-color: #00f0ff;
+  color: #121212;
+  box-shadow: 0 0 10px #00f0ff;
+}
+
+.react-time-picker {
+  background-color: #121212;
+  color: #fff;
+  border-radius: 8px;
+  border: 1px solid #333;
+  padding: 5px 10px;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.react-time-picker__wrapper {
+  background: #121212;
+  border: none;
+}
+
+.react-time-picker__inputGroup__input {
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  outline: none;
+}
+
+.react-time-picker__clock-button,
+.react-time-picker__clear-button {
+  display: none;
+}
+
+.react-time-picker__inputGroup__divider {
   color: #00f0ff;
+}
+
+.react-time-picker__inputGroup {
+  background: transparent;
+}
+
+.rdp-caption_label {
+  color: #00f0ff;
+  font-weight: bold;
+  font-size: 1.3rem;
+  left: 30%;
+}
+
+.rdp-weekday {
+  color: #00f0ff !important;
+  font-size: 0.7rem !important;
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  opacity: 1 !important;
 }

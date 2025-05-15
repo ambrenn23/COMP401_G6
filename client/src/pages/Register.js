@@ -25,7 +25,8 @@ export default function Register() {
     godparent1: "",
     godparent2: "",
   });
-  const [selectedDate, setSelectedDate] = useState();
+
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,6 +34,12 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!form.name || !form.email || !form.date || !form.phone) {
+      alert("Please fill all required fields including selecting a date.");
+      return;
+    }
+
     try {
       const response = await fetch("http://127.0.0.1:5000/register", {
         method: "POST",
@@ -42,7 +49,18 @@ export default function Register() {
 
       if (response.ok) {
         alert("Registered successfully!");
-        setForm({ name: "", email: "", date: "", time: "12:00", payment: false, parent1: "", parent2: "", godparent1: "", godparent2: "", });
+        setForm({
+          name: "",
+          email: "",
+          date: "",
+          time: "12:00",
+          payment: false,
+          phone: "",
+          parent1: "",
+          parent2: "",
+          godparent1: "",
+          godparent2: "",
+        });
         setSelectedDate(null);
       } else {
         alert("Failed to submit form.");
@@ -177,14 +195,14 @@ export default function Register() {
               style={inputStyle}
             />
             <input
-                name="phone"
-                type="tel"
-                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                placeholder="Phone Number (e.g. 555-123-4567)"
-                value={form.phone}
-                onChange={handleChange}
-                required
-                style={inputStyle}
+              name="phone"
+              type="tel"
+              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              placeholder="Phone Number (e.g. 555-123-4567)"
+              value={form.phone}
+              onChange={handleChange}
+              required
+              style={inputStyle}
             />
             <input
               name="email"
@@ -203,8 +221,10 @@ export default function Register() {
             <Calendar
               selected={selectedDate}
               onSelect={(date) => {
-                setSelectedDate(date);
-                setForm({ ...form, date: date.toISOString().split("T")[0] });
+                if (date) {
+                  setSelectedDate(date);
+                  setForm({ ...form, date: date.toISOString().split("T")[0] });
+                }
               }}
             />
 
