@@ -17,8 +17,13 @@ export default function Register() {
     name: "",
     email: "",
     date: "",
-    time: "12:00",
-    donation: "",
+    time: "7:00",
+    payment: false,
+    phone: "",
+    parent1: "",
+    parent2: "",
+    godparent1: "",
+    godparent2: "",
   });
   const [selectedDate, setSelectedDate] = useState();
 
@@ -37,7 +42,7 @@ export default function Register() {
 
       if (response.ok) {
         alert("Registered successfully!");
-        setForm({ name: "", email: "", date: "", time: "12:00", donation: "" });
+        setForm({ name: "", email: "", date: "", time: "12:00", payment: false, parent1: "", parent2: "", godparent1: "", godparent2: "", });
         setSelectedDate(null);
       } else {
         alert("Failed to submit form.");
@@ -142,6 +147,46 @@ export default function Register() {
               style={inputStyle}
             />
             <input
+              name="parent1"
+              placeholder="Parent/Guardian"
+              value={form.parent1}
+              onChange={handleChange}
+              required
+              style={inputStyle}
+            />
+            <input
+              name="parent2"
+              placeholder="Parent/Guardian 2 (optional)"
+              value={form.parent2}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+            <input
+              name="godparent1"
+              placeholder="Godparent"
+              value={form.godparent1}
+              onChange={handleChange}
+              required
+              style={inputStyle}
+            />
+            <input
+              name="godparent2"
+              placeholder="Godparent 2 (optional)"
+              value={form.godparent2}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+            <input
+                name="phone"
+                type="tel"
+                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                placeholder="Phone Number (e.g. 555-123-4567)"
+                value={form.phone}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+            />
+            <input
               name="email"
               type="email"
               placeholder="Email"
@@ -177,15 +222,6 @@ export default function Register() {
               disableClock={true}
             />
 
-            <input
-              name="donation"
-              type="number"
-              min="0"
-              placeholder="Donation (optional)"
-              value={form.donation}
-              onChange={handleChange}
-              style={inputStyle}
-            />
             <button
               type="submit"
               style={buttonStyle}

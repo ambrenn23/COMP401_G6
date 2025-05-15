@@ -19,11 +19,11 @@ const pool = new Pool({
 });
 
 app.post("/register", async (req, res) => {
-  const { name, email, date, time, donation } = req.body;
+  const { name, email, date, time, payment, phone, parent1, parent2, godparent1, godparent2 } = req.body;
   try {
     await pool.query(
-      "INSERT INTO registrations (name, email, date, time, donation) VALUES ($1, $2, $3, $4, $5)",
-      [name, email, date, time, donation]
+      "INSERT INTO registrations (name, email, date, time, payment, phone, parent1, parent2, godparent1, godparent2) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+      [name, email, date, time, payment, phone, parent1, parent2, godparent1, godparent2]
     );
     res.send("Registered");
   } catch (err) {
@@ -61,13 +61,34 @@ app.delete("/register/:id", async (req, res) => {
   }
 });
 
-app.put("/register/:id", async (req, res) => {
+app.put("/register/:id/payment", async (req, res) => {
   const id = parseInt(req.params.id);
-  const { name, email, date, time, donation } = req.body;
+  const { payment } = req.body;
+
   try {
     const result = await pool.query(
-      "UPDATE registrations SET name = $1, email = $2, date = $3, time = $4, donation = $5 WHERE id = $6",
-      [name, email, date, time, donation, id]
+      "UPDATE registrations SET payment = $1 WHERE id = $2",
+      [payment, id]
+    );
+    if (result.rowCount > 0) {
+      res.send(`Payment status updated for id ${id}.`);
+    } else {
+      res.status(404).send("Student not found.");
+    }
+  } catch (err) {
+    console.error("Error updating payment:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+app.put("/register/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { name, email, date, time, payment, phone, parent1, parent2, godparent1, godparent2 } = req.body;
+  try {
+    const result = await pool.query(
+      "UPDATE registrations SET name = $1, email = $2, date = $3, time = $4, payment = $5, phone = $6, parent1 = $7, parent2 = $8, godparent1 = $9, godparent2 = $10 WHERE id = $11",
+      [name, email, date, time, payment, phone, parent1, parent2, godparent1, godparent2, id]
     );
     if (result.rowCount > 0) {
       res.send(`Student with id ${id} updated.`);

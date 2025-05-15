@@ -75,16 +75,61 @@ export default function Admin() {
                 }}
               >
                 <p style={{ marginBottom: "8px" }}>
-                  <strong>{entry.name}</strong> ({entry.email})
+                  <strong>Child Name:{" "}</strong>{entry.name}
+                </p>
+                <p style={{ marginBottom: "8px" }}>
+                  <strong>1 Parent Name:{" "}</strong>{entry.parent1}
+                </p>
+                <p style={{ marginBottom: "8px" }}>
+                  <strong>2 Parent Name:{" "}</strong>{entry.parent2}
+                </p>
+                <p style={{ marginBottom: "8px" }}>
+                  <strong>1 Godparent Name:{" "}</strong>{entry.godparent1}
+                </p>
+                <p style={{ marginBottom: "8px" }}>
+                  <strong>2 Godparent Name:{" "}</strong>{entry.godparent2}
+                </p>
+                <p style={{ marginBottom: "8px" }}>
+                    <strong>Email:{" "}</strong>{entry.email}
+                </p>
+                <p style={{ marginBottom: "8px" }}>
+                    <strong>Phone Number:{" "}</strong>{entry.phone}
                 </p>
                 <p style={{ marginBottom: "8px", color: "#0ff" }}>
                   Date:{" "}
                   {entry.date ? new Date(entry.date).toLocaleDateString() : "-"}{" "}
                   | Time: {entry.time || "-"}
-                </p>
-                <p style={{ marginBottom: "12px", color: "#0f0" }}>
-                  Donation: {entry.donation ? `$${entry.donation}` : "None"}
-                </p>
+                </p>    
+
+                <label style={{ display: "block", marginBottom: "12px", color: "#fff" }}>
+                <input
+                    type="checkbox"
+                    checked={entry.payment}
+                    onChange={async () => {
+                        try {
+                            const res = await fetch(`http://127.0.0.1:5000/register/${entry.id}/payment`, {
+                                method: "PUT",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ payment: !entry.payment }),
+                            });
+                            if (res.ok) {
+                                // Update local state
+                                setData((prev) =>
+                                    prev.map((e) =>
+                                        e.id === entry.id ? { ...e, payment: !e.payment } : e
+                                    )
+                                );
+                            } else {
+                                alert("Failed to update payment status.");
+                            }
+                        } catch (err) {
+                            console.error("Payment update error:", err);
+                        }
+                        }}
+                    />{" "}
+                    Payment Received
+                </label>
+
                 <div>
                   <button
                     style={{
