@@ -15,6 +15,7 @@ export function Calendar({ selected, onSelect }) {
   return (
     <div>
       <button
+        type="button"
         style={{
           background: "linear-gradient(to right, #00f0ff, #8e2de2)",
           border: "none",
